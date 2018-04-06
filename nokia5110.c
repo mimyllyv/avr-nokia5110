@@ -1,19 +1,18 @@
 /* Nokia 5110 LCD AVR Library
  *
- * Copyright (C) 2015 Sergey Denisov.
- * Written by Sergey Denisov aka LittleBuster (DenisovS21@gmail.com)
- *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public Licence
  * as published by the Free Software Foundation; either version 3
  * of the Licence, or (at your option) any later version.
  *
- * Original library written by SkewPL, http://skew.tk
+ * Original library written by Sergey Denisov aka LittleBuster
+ * https://github.com/LittleBuster/avr-nokia5110
  */
+
+#define F_CPU 16000000
 
 #include "nokia5110.h"
 
-#include <avr/pgmspace.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include "nokia5110_chars.h"
@@ -26,10 +25,12 @@ static struct {
     /* cursor position */
     uint8_t cursor_x;
     uint8_t cursor_y;
+	uint8_t bgl_pwm;
 
 } nokia_lcd = {
     .cursor_x = 0,
-    .cursor_y = 0
+    .cursor_y = 0,
+	.bgl_pwm = 0
 };
 
 /**
@@ -106,8 +107,8 @@ void nokia_lcd_init(void)
 	PORT_LCD &= ~(1 << LCD_SCE);
 	/* -LCD Extended Commands mode- */
 	write_cmd(0x21);
-	/* LCD bias mode 1:48 */
-	write_cmd(0x13);
+	/* LCD bias mode 1:48. lowered as constrast was too high */
+	write_cmd(0x10);
 	/* Set temperature coefficient */
 	write_cmd(0x06);
 	/* Default VOP (3.06 + 66 * 0.06 = 7V) */
@@ -119,7 +120,6 @@ void nokia_lcd_init(void)
 
 	/* Clear LCD RAM */
 	write_cmd(0x80);
-	write_cmd(LCD_CONTRAST);
 	for (i = 0; i < 504; i++)
 		write_data(0x00);
 
@@ -200,4 +200,42 @@ void nokia_lcd_render(void)
 	/* Write screen to display */
 	for (i = 0; i < 504; i++)
 		write_data(nokia_lcd.screen[i]);
+}
+
+void nokia_lcd_backlight_on(void)
+{
+	nokia_lcd_turn_off_pwm();
+	DDR_LCD |= (1 << LCD_BGL);
+	PORT_LCD &= ~(1 << LCD_BGL);
+}
+
+void nokia_lcd_backlight_off(void)
+{
+	nokia_lcd_turn_off_pwm();
+	DDR_LCD |= (1 << LCD_BGL);
+	PORT_LCD |= (1 << LCD_BGL);
+}
+
+void nokia_lcd_turn_off_pwm(void)
+{
+	if(nokia_lcd.bgl_pwm == 1)
+	{
+		nokia_lcd.bgl_pwm = 0;
+		TCCR1A &= (0 << COM1A1) & (0 << COM1A1);
+		DDR_LCD &= ~(1 << LCD_BGL);
+	}
+}
+
+void nokia_lcd_backlight_level(uint8_t dc)
+{
+	if(nokia_lcd.bgl_pwm == 0)
+	{
+		nokia_lcd.bgl_pwm = 1;
+		DDR_LCD |= (1 << LCD_BGL);
+		TCCR1A |= (1 << COM1A1) | (1 << WGM10);
+		TCCR1B |= (1 << CS10) | (1 << WGM12);
+	}
+	
+	/* set pwm duty cycle */
+	OCR1A = dc;
 }

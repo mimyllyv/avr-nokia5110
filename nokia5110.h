@@ -1,14 +1,12 @@
 /* Nokia 5110 LCD AVR Library
  *
- * Copyright (C) 2015 Sergey Denisov.
- * Written by Sergey Denisov aka LittleBuster (DenisovS21@gmail.com)
- *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public Licence
  * as published by the Free Software Foundation; either version 3
  * of the Licence, or (at your option) any later version.
  *
- * Original library written by SkewPL, http://skew.tk
+ * Original library written by Sergey Denisov aka LittleBuster
+ * https://github.com/LittleBuster/avr-nokia5110
  */
 
 #ifndef __NOKIA_5110_H__
@@ -26,13 +24,12 @@
 /*
  * LCD's pins
  */
-#define LCD_SCE PB1
+#define LCD_SCE PB0
+#define LCD_BGL PB1
 #define LCD_RST PB2
-#define LCD_DC PB3
+#define LCD_DC  PB3
 #define LCD_DIN PB4
 #define LCD_CLK PB5
-
-#define LCD_CONTRAST 0x40
 
 /*
  * Must be called once before any other function, initializes display
@@ -67,7 +64,7 @@ void nokia_lcd_set_pixel(uint8_t x, uint8_t y, uint8_t value);
 void nokia_lcd_write_char(char code, uint8_t scale);
 
 /**
- * Draw string. Example: writeString("abc",3);
+ * Draw string. Example: nokia_lcd_write_string("abc",3);
  * @str: sending string
  * @scale: size of text
  */
@@ -85,5 +82,26 @@ void nokia_lcd_set_cursor(uint8_t x, uint8_t y);
  */
 void nokia_lcd_render(void);
 
+/*
+ * Set backlight on.
+*/
+void nokia_lcd_backlight_on(void);
+
+/*
+ * Set backlight off.
+*/
+void nokia_lcd_backlight_off(void);
+
+/*
+ * Set pwm off. (pin can be used as output again)
+*/
+void nokia_lcd_turn_off_pwm(void);
+
+/*
+ * Set backlight intensity.
+ * 0 -> 100%, 0xFF -> 0%
+ * Example nokia_lcd_backlight_level(0xE0);
+*/
+void nokia_lcd_backlight_level(uint8_t dc);
 
 #endif
