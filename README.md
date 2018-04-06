@@ -6,6 +6,7 @@
  - Cursor, every char will be placed next to previous automatically
  - Power on/off LCD
  - Font in external file, saved in Flash (PROGMEM)
+ - Backlight support (with PWM)
 
 # Usage
 
