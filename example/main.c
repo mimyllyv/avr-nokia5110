@@ -17,19 +17,19 @@
 int main(void)
 {
     nokia_lcd_init();
-	nokia_lcd_backlight_off();
+    nokia_lcd_backlight_off();
     nokia_lcd_clear();
     nokia_lcd_write_string("IT'S WORKING!",1);
     nokia_lcd_set_cursor(0, 10);
     nokia_lcd_write_string("Nice!", 3);
     nokia_lcd_render();
 
-	for(uint8_t dc = 0xFF;dc>0x00;dc--) {
-		nokia_lcd_backlight_level(dc);
+    for(uint8_t dc = 0xFF;dc>0x00;dc--) {
+        nokia_lcd_backlight_level(dc);
         _delay_ms(50);
-	}
+    }
 
-	nokia_lcd_backlight_on();
+    nokia_lcd_backlight_on();
 
     for (;;) {
     }
