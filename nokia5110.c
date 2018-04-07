@@ -26,7 +26,6 @@ static struct {
     uint8_t cursor_x;
     uint8_t cursor_y;
 	uint8_t bgl_pwm;
-
 } nokia_lcd = {
     .cursor_x = 0,
     .cursor_y = 0,
@@ -110,7 +109,7 @@ void nokia_lcd_init(void)
 	/* LCD bias mode 1:48 */
 	write_cmd(0x13);
 	/* Set temperature coefficient */
-	write_cmd(0x06);
+	write_cmd(0x05);
 	/* Default VOP (3.06 + 66 * 0.06 = 7V) */
 	write_cmd(0xC2);
 	/* Standard Commands mode, powered down */
@@ -189,6 +188,18 @@ void nokia_lcd_set_cursor(uint8_t x, uint8_t y)
 {
 	nokia_lcd.cursor_x = x;
 	nokia_lcd.cursor_y = y;
+}
+
+void nokia_lcd_draw_image(uint8_t image[], uint8_t wi, uint8_t hi, uint8_t xd, uint8_t yd)
+{
+    register uint8_t h, w;
+    for(h=0;h<hi;h++)
+    {
+        for(w=0;w<wi;w++)
+        {
+            nokia_lcd_set_pixel(xd + w, yd + h, ((image[h/8*wi+w] >> h%8)  & 0x01));
+        }
+    }
 }
 
 void nokia_lcd_render(void)

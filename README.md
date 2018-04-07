@@ -7,6 +7,7 @@
  - Power on/off LCD
  - Font in external file, saved in Flash (PROGMEM)
  - Backlight support (with PWM)
+ - Draw images
 
 # Usage
 

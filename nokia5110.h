@@ -77,24 +77,32 @@ void nokia_lcd_write_string(const char *str, uint8_t scale);
  */
 void nokia_lcd_set_cursor(uint8_t x, uint8_t y);
 
-/*
+/**
+ * Draw image to screen.
+ * image  - 1bpp image data
+ * wi, hi   - image width and height
+ * xd, yd   - display coordinates
+ */
+void nokia_lcd_draw_image(uint8_t image[], uint8_t wi, uint8_t hi, uint8_t xd, uint8_t yd);
+
+/**
  * Render screen to display
  */
 void nokia_lcd_render(void);
 
-/*
+/**
  * Set backlight on.
-*/
+ */
 void nokia_lcd_backlight_on(void);
 
-/*
+/**
  * Set backlight off.
-*/
+ */
 void nokia_lcd_backlight_off(void);
 
-/*
+/**
  * Set pwm off. (pin can be used as output again)
-*/
+ */
 void nokia_lcd_turn_off_pwm(void);
 
 /*
