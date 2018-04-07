@@ -107,8 +107,8 @@ void nokia_lcd_init(void)
 	PORT_LCD &= ~(1 << LCD_SCE);
 	/* -LCD Extended Commands mode- */
 	write_cmd(0x21);
-	/* LCD bias mode 1:48. lowered as constrast was too high */
-	write_cmd(0x10);
+	/* LCD bias mode 1:48 */
+	write_cmd(0x13);
 	/* Set temperature coefficient */
 	write_cmd(0x06);
 	/* Default VOP (3.06 + 66 * 0.06 = 7V) */
@@ -120,6 +120,7 @@ void nokia_lcd_init(void)
 
 	/* Clear LCD RAM */
 	write_cmd(0x80);
+	write_cmd(0x20);
 	for (i = 0; i < 504; i++)
 		write_data(0x00);
 
