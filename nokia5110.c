@@ -9,8 +9,6 @@
  * https://github.com/LittleBuster/avr-nokia5110
  */
 
-#define F_CPU 16000000
-
 #include "nokia5110.h"
 
 #include <avr/io.h>
@@ -75,6 +73,16 @@ static void write_cmd(uint8_t cmd)
 static void write_data(uint8_t data)
 {
 	write(data, 1);
+}
+
+void nokia_lcd_turn_off_pwm(void)
+{
+    if(nokia_lcd.bgl_pwm == 1)
+    {
+        nokia_lcd.bgl_pwm = 0;
+        TCCR1A &= (0 << COM1A1) & (0 << COM1A1);
+        DDR_LCD &= ~(1 << LCD_BGL);
+    }
 }
 
 /*
@@ -190,14 +198,14 @@ void nokia_lcd_set_cursor(uint8_t x, uint8_t y)
 	nokia_lcd.cursor_y = y;
 }
 
-void nokia_lcd_draw_image(uint8_t image[], uint8_t wi, uint8_t hi, uint8_t xd, uint8_t yd)
+void nokia_lcd_draw_image(const uint8_t image[], uint8_t wi, uint8_t hi, uint8_t xd, uint8_t yd)
 {
     register uint8_t h, w;
     for(h=0;h<hi;h++)
     {
         for(w=0;w<wi;w++)
         {
-            nokia_lcd_set_pixel(xd + w, yd + h, ((image[h/8*wi+w] >> h%8)  & 0x01));
+            nokia_lcd_set_pixel(xd + w, yd + h, ((pgm_read_byte(&image[h/8*wi+w]) >> h%8) & 0x01));
         }
     }
 }
@@ -226,16 +234,6 @@ void nokia_lcd_backlight_off(void)
 	nokia_lcd_turn_off_pwm();
 	DDR_LCD |= (1 << LCD_BGL);
 	PORT_LCD |= (1 << LCD_BGL);
-}
-
-void nokia_lcd_turn_off_pwm(void)
-{
-	if(nokia_lcd.bgl_pwm == 1)
-	{
-		nokia_lcd.bgl_pwm = 0;
-		TCCR1A &= (0 << COM1A1) & (0 << COM1A1);
-		DDR_LCD &= ~(1 << LCD_BGL);
-	}
 }
 
 void nokia_lcd_backlight_level(uint8_t dc)

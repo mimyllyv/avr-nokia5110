@@ -83,7 +83,7 @@ void nokia_lcd_set_cursor(uint8_t x, uint8_t y);
  * wi, hi   - image width and height
  * xd, yd   - display coordinates
  */
-void nokia_lcd_draw_image(uint8_t image[], uint8_t wi, uint8_t hi, uint8_t xd, uint8_t yd);
+void nokia_lcd_draw_image(const uint8_t image[], uint8_t wi, uint8_t hi, uint8_t xd, uint8_t yd);
 
 /**
  * Render screen to display
