@@ -17,5 +17,6 @@
 
 Explanation of all functions is in lcd.h header file.
 <br>
+<img src="http://www.myllyvirta.com/img/IMG_8586.jpg" />
 <img src="http://s019.radikal.ru/i607/1508/66/5a6b22c6d90a.png" />
 <img src="http://i081.radikal.ru/1508/68/d14ec7d019a7.png" />
